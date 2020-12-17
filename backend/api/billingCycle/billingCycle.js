@@ -21,7 +21,7 @@ const debitSchema = new mongoose.Schema({
     value: {
         type: Number,
         min: 0,
-        required: true
+        required: [true, 'Informe o valor do débito']
     },
     status: {
         type: String,
