@@ -27,7 +27,7 @@ const debitSchema = new mongoose.Schema({
         type: String,
         required: false,
         uppercase: true,
-        enum: ['PAGO', 'PENDENTE', 'AGENDADO']
+        enum: ["PAGO", "PENDENTE", "AGENDADO"]
     }
 })
 
