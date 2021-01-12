@@ -1,10 +1,10 @@
 <table class="table">
     <thead>
         <tr>
-            <th>Nome</th>
-            <th>Valor</th>
-            <th>Status</th>
-            <th>Ações</th>
+            <th width="30%">Nome</th>
+            <th width="20%">Valor</th>
+            <th width="25%">Status</th>
+            <th width="25%">Ações</th>
         </tr>
     </thead>
     <tbody>
@@ -15,20 +15,20 @@
             </td>
             <td>
                 <input ng-model="debit.value" class="form-control" placeholder="Informe o Valor"
-                    ng-readonly="bcCtrl.tabDelete" type="number">
+                    ng-readonly="bcCtrl.tabDelete" type="number" ng-change="bcCtrl.calculateValues()">
             </td>
             <td>
                 <input ng-model="debit.status" class="form-control" placeholder="Informe o Status"
                     ng-readonly="bcCtrl.tabDelete">
             </td>
             <td class="table-actions">
-                <button class="btn btn-success" ng-class="{disabled: bcCtrl.tabDelete}">
+                <button class="btn btn-success" ng-disabled="bcCtrl.tabDelete" ng-click="bcCtrl.addDebit($index)">
                     <i class="fa fa-plus"></i>
                 </button>
-                <button class="btn btn-warning" ng-class="{disabled: bcCtrl.tabDelete}">
+                <button class="btn btn-warning" ng-disabled="bcCtrl.tabDelete" ng-click="bcCtrl.cloneDebit($index, debit)">
                     <i class="fa fa-clone"></i>
                 </button>
-                <button class="btn btn-danger" ng-class="{disabled: bcCtrl.tabDelete}">
+                <button class="btn btn-danger" ng-disabled="bcCtrl.tabDelete" ng-click="bcCtrl.deleteDebit($index)">
                     <i class="fa fa-trash"></i>
                 </button>
             </td>
