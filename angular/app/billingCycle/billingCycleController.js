@@ -13,21 +13,20 @@
 
         vm.refresh = function () {
             const page = parseInt($location.search().page) || 1
-            $http.get(`${url}?skip=${(page - 1) * 2}&limit=2`).then(function (response) {
+            $http.get(`${url}?skip=${(page - 1) * 10}&limit=10`).then(function (response) {
                 vm.billingCycle = {
                     credits: [{}],
                     debts: [{}]
                 }
                 vm.billingCycles = response.data
+
                 vm.calculateValues()
-                
-                $http.get(`${url}/count`).then(function(response){
-                    vm.pages = Math.ceil(response.value / 2)
+                $http.get(`${url}/count`).then(function (response) {
+                    vm.pages = Math.ceil(response.data.value / 10)
                     tabs.show(vm, {
                         tabList: true,
                         tabCreate: true
                     })
-                    
                 })
             })
         }
@@ -36,8 +35,8 @@
             $http.post(url, vm.billingCycle).then(function (response) {
                 vm.refresh()
                 msgs.addSuccess('Operação realizada com sucesso!')
-            }).catch(function (data) {
-                msgs.addError(data.errors)
+            }).catch(function (response) {
+                msgs.addError(response.data.errors)
             })
         }
 
@@ -63,8 +62,8 @@
                 console.log(response)
                 vm.refresh()
                 msgs.addSuccess('Operação realizada com sucesso')
-            }).catch(function (data) {
-                msgs.addError(data.errors)
+            }).catch(function (response) {
+                msgs.addError(response.data.errors)
             })
         }
 
@@ -73,8 +72,8 @@
             $http.delete(deleteUrl, vm.billingCycle).then(function (response) {
                 vm.refresh()
                 msgs.addSuccess('Operação realizada com sucesso!')
-            }).catch(function (data) {
-                msgs.addError(data.errors)
+            }).catch(function (response) {
+                msgs.addError(response.data.errors)
             })
         }
 
@@ -82,44 +81,62 @@
             vm.billingCycle.credits.splice(index + 1, 0, {})
         }
 
-        vm.cloneCredit = function (index, {name, value}) {
-            vm.billingCycle.credits.splice(index + 1, 0, {name, value})
+        vm.cloneCredit = function (index, {
+            name,
+            value
+        }) {
+            vm.billingCycle.credits.splice(index + 1, 0, {
+                name,
+                value
+            })
             vm.calculateValues()
         }
 
         vm.deleteCredit = function (index) {
-            if(vm.billingCycle.credits.length > 1){
+            if (vm.billingCycle.credits.length > 1) {
                 vm.billingCycle.credits.splice(index, 1)
                 vm.calculateValues()
-            }            
+            }
         }
 
-        vm.addDebit = function(index){
+        vm.addDebit = function (index) {
             vm.billingCycle.debts.splice(index + 1, 0, {})
         }
 
-        vm.cloneDebit = function(index, {name, value, status}){
-            vm.billingCycle.debts.splice(index + 1, 0, {name, value, status})
+        vm.cloneDebit = function (index, {
+            name,
+            value,
+            status
+        }) {
+            vm.billingCycle.debts.splice(index + 1, 0, {
+                name,
+                value,
+                status
+            })
             vm.calculateValues()
         }
 
-        vm.deleteDebit = function(index){
-            if(vm.billingCycle.debts.length > 1){
+        vm.deleteDebit = function (index) {
+            if (vm.billingCycle.debts.length > 1) {
                 vm.billingCycle.debts.splice(index, 1)
                 vm.calculateValues()
             }
         }
 
-        vm.calculateValues = function(){
+        vm.calculateValues = function () {
             vm.credit = 0
             vm.debt = 0
 
-            if(vm.billingCycle){
-                vm.billingCycle.credits.forEach(function({value}){
+            if (vm.billingCycle) {
+                vm.billingCycle.credits.forEach(function ({
+                    value
+                }) {
                     vm.credit += !value || isNaN(value) ? 0 : parseFloat(value)
                 });
 
-                vm.billingCycle.debts.forEach(function({value}){
+                vm.billingCycle.debts.forEach(function ({
+                    value
+                }) {
                     vm.debt += !value || isNaN(value) ? 0 : parseFloat(value)
                 });
             }

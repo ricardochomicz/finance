@@ -1,16 +1,33 @@
 const express = require('express')
+const auth = require('./auth')
 
 module.exports = function (server) {
 
-    //API Routes
-    const router = express.Router()
-    server.use('/api', router)
+    /*
+     * Rotas abertas
+     */
+    const openApi = express.Router()
+    server.use('/oapi', openApi)
+    const AuthService = require('../api/user/authService')
+    openApi.post('/login', AuthService.login)
+    openApi.post('/signup', AuthService.signup)
+    openApi.post('/validateToken', AuthService.validateToken)
 
-    //rotas da API
-    const billingCycleService = require('../api/billingCycle/billingCycleService')
-    //registra todas as rotas (get, post, put, delete)
-    billingCycleService.register(router, '/billingCycles')
+    /*
+     * Rotas protegidas por Token JWT
+     */
+    const protectedApi = express.Router()
+    server.use('/api', protectedApi)
 
-    const billingSumaryService = require('../api/billingSumary/billingSumaryService')
-    router.route('/billingSumary').get(billingSumaryService.getSumary)
+    protectedApi.use(auth)
+
+    const billingCycleService = require(
+        '../api/billingCycle/billingCycleService')
+    billingCycleService.register(protectedApi, '/billingCycles')
+    
+    
+    const billingSumaryService =
+        require('../api/billingSumary/billingSumaryService')
+    protectedApi.route('/billingSumary').get(billingSumaryService.getSumary)
+    
 }
